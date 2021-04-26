@@ -90,7 +90,6 @@ u_conv2d_top
 );
 
 /* uart tx fsm */
-/* we transmit 2 zero byte to synchronize packet */
 localparam 	UART_TX_IDLE		= 6'b0000_00,
 			UART_TX_RD			= 6'b0000_01,
 			UART_TX_BYTE_1		= 6'b0000_10,

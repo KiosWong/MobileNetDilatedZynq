@@ -12,41 +12,26 @@ module conv_datapath
 	
 	input  pipe_flush_i,
 	input  kernel_data_valid_i,
-	input  kernel_data_reorder_i,
 	
 	input  [KERNEL_SIZE*KERNEL_SIZE*KERNEL_DATA_WIDTH-1:0]kernel_data_i,
 	input  [KERNEL_SIZE*KERNEL_SIZE*KERNEL_DATA_WIDTH-1:0]filter_data_i,
-	
 	
 	output conv_data_valid_o,
 	output [PRODUCT_DATA_WIDTH-1:0]conv_data_o
 );
 
 integer i;
-reg [KERNEL_DATA_WIDTH-1:0]w_kerne_data_reordered[KERNEL_SIZE*KERNEL_SIZE-1:0];
+reg [KERNEL_DATA_WIDTH-1:0]w_kerne_data[KERNEL_SIZE*KERNEL_SIZE-1:0];
 always @(kernel_data_i) begin
-	if(kernel_data_reorder_i) begin
-		w_kerne_data_reordered[8] = kernel_data_i[(0+1)*KERNEL_DATA_WIDTH-1:0*KERNEL_DATA_WIDTH];
-		w_kerne_data_reordered[7] = kernel_data_i[(3+1)*KERNEL_DATA_WIDTH-1:3*KERNEL_DATA_WIDTH];
-		w_kerne_data_reordered[6] = kernel_data_i[(6+1)*KERNEL_DATA_WIDTH-1:6*KERNEL_DATA_WIDTH];
-		w_kerne_data_reordered[5] = kernel_data_i[(1+1)*KERNEL_DATA_WIDTH-1:1*KERNEL_DATA_WIDTH];
-		w_kerne_data_reordered[4] = kernel_data_i[(4+1)*KERNEL_DATA_WIDTH-1:4*KERNEL_DATA_WIDTH];
-		w_kerne_data_reordered[3] = kernel_data_i[(7+1)*KERNEL_DATA_WIDTH-1:7*KERNEL_DATA_WIDTH];
-		w_kerne_data_reordered[2] = kernel_data_i[(2+1)*KERNEL_DATA_WIDTH-1:2*KERNEL_DATA_WIDTH];
-		w_kerne_data_reordered[1] = kernel_data_i[(5+1)*KERNEL_DATA_WIDTH-1:5*KERNEL_DATA_WIDTH];
-		w_kerne_data_reordered[0] = kernel_data_i[(8+1)*KERNEL_DATA_WIDTH-1:8*KERNEL_DATA_WIDTH];
-	end
-	else begin
-		w_kerne_data_reordered[0] = kernel_data_i[(0+1)*KERNEL_DATA_WIDTH-1:0*KERNEL_DATA_WIDTH];
-		w_kerne_data_reordered[1] = kernel_data_i[(1+1)*KERNEL_DATA_WIDTH-1:1*KERNEL_DATA_WIDTH];
-		w_kerne_data_reordered[2] = kernel_data_i[(2+1)*KERNEL_DATA_WIDTH-1:2*KERNEL_DATA_WIDTH];
-		w_kerne_data_reordered[3] = kernel_data_i[(3+1)*KERNEL_DATA_WIDTH-1:3*KERNEL_DATA_WIDTH];
-		w_kerne_data_reordered[4] = kernel_data_i[(4+1)*KERNEL_DATA_WIDTH-1:4*KERNEL_DATA_WIDTH];
-		w_kerne_data_reordered[5] = kernel_data_i[(5+1)*KERNEL_DATA_WIDTH-1:5*KERNEL_DATA_WIDTH];
-		w_kerne_data_reordered[6] = kernel_data_i[(6+1)*KERNEL_DATA_WIDTH-1:6*KERNEL_DATA_WIDTH];
-		w_kerne_data_reordered[7] = kernel_data_i[(7+1)*KERNEL_DATA_WIDTH-1:7*KERNEL_DATA_WIDTH];
-		w_kerne_data_reordered[8] = kernel_data_i[(8+1)*KERNEL_DATA_WIDTH-1:8*KERNEL_DATA_WIDTH];
-	end
+	w_kerne_data[0] = kernel_data_i[(0+1)*KERNEL_DATA_WIDTH-1:0*KERNEL_DATA_WIDTH];
+	w_kerne_data[1] = kernel_data_i[(1+1)*KERNEL_DATA_WIDTH-1:1*KERNEL_DATA_WIDTH];
+	w_kerne_data[2] = kernel_data_i[(2+1)*KERNEL_DATA_WIDTH-1:2*KERNEL_DATA_WIDTH];
+	w_kerne_data[3] = kernel_data_i[(3+1)*KERNEL_DATA_WIDTH-1:3*KERNEL_DATA_WIDTH];
+	w_kerne_data[4] = kernel_data_i[(4+1)*KERNEL_DATA_WIDTH-1:4*KERNEL_DATA_WIDTH];
+	w_kerne_data[5] = kernel_data_i[(5+1)*KERNEL_DATA_WIDTH-1:5*KERNEL_DATA_WIDTH];
+	w_kerne_data[6] = kernel_data_i[(6+1)*KERNEL_DATA_WIDTH-1:6*KERNEL_DATA_WIDTH];
+	w_kerne_data[7] = kernel_data_i[(7+1)*KERNEL_DATA_WIDTH-1:7*KERNEL_DATA_WIDTH];
+	w_kerne_data[8] = kernel_data_i[(8+1)*KERNEL_DATA_WIDTH-1:8*KERNEL_DATA_WIDTH];
 end
 
 
@@ -56,7 +41,7 @@ wire [PRODUCT_DATA_WIDTH-1:0]w_mult_product[KERNEL_SIZE*KERNEL_SIZE-1:0];
 generate
 	genvar j;
 	for(j = 0; j < KERNEL_SIZE * KERNEL_SIZE; j = j + 1) begin: mult_product_generate
-		assign w_mult_product[j] = w_kerne_data_reordered[j] * filter_data_i[(j+1)*KERNEL_DATA_WIDTH-1-:KERNEL_DATA_WIDTH]; 
+		assign w_mult_product[j] = w_kerne_data[j] * filter_data_i[(j+1)*KERNEL_DATA_WIDTH-1-:KERNEL_DATA_WIDTH]; 
 	end
 endgenerate
 

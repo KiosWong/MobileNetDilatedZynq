@@ -12,8 +12,6 @@ module conv2d_top
 	input  en,
 	input  clear,
 	
-	input  kernel_data_reorder_i,
-	
 	input  ifmap_fifo_wr_en_i,
 	input  [IFMAP_DATA_WIDTH-1:0]ifmap_fifo_data_i,
 	input  [KERNEL_SIZE*KERNEL_SIZE*IFMAP_DATA_WIDTH-1:0]filter_data_i,
@@ -105,7 +103,6 @@ u_conv_datapath
 
 	.pipe_flush_i(clear),
 	.kernel_data_valid_i(w_window_data_valid),
-	.kernel_data_reorder_i(kernel_data_reorder_i),
 
 	.kernel_data_i(w_window_data_out),
 	.filter_data_i(filter_data_i),
